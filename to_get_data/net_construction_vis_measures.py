@@ -1,5 +1,21 @@
 import networkx as nx
 import matplotlib.pyplot as plt
+import random
+from collections import defaultdict
+
+### List of main functions in this file
+# create_vis_geral: creates a graph to visualize all the connections, a family or general kinship graph.
+# centralidad: Gets measures of centrality
+# gerais: gets measures of the network
+# p_graph: A p graph specially for cases with no clans
+# p_graph_attribute: a p graph considering clans and distribuing the nodes according to some attribute
+# marriage_graph_attribute: a marriage considering clans and distribuing the nodes according to some attribute. Only with the [9] uds
+# egocentric_indiv: All the connections by UD
+# small_ego_genealogy: a small genealogy for a UD in a pgraph style
+# count_links_between_and_within: a count, specially used with the graph of marriages, that gets the counts in or out of certain attribute
+# general_charactersitics_data: create a dataset with general aspects
+
+
 
 # Functions for the simulation.
 #This is not used
@@ -21,32 +37,66 @@ def disentangle_function(nested_list):
     return result
 
 #Big network. Network for exchange. If measures == True, get the measures
-def create_vis_geral(uds_copy, measures):
-    Gg = nx.Graph()
+def create_vis_geral(uds_copy, measures=False, df_step=None):
+    def draw_network(Gg, measures):
+        # Vis_graph
+        pos = nx.spring_layout(Gg, k=1)
+        plt.figure(figsize=(17, 10))
+        nx.draw(Gg, pos, with_labels=True, node_size=1, node_color='lightblue', font_color='black') #small
+        #nx.draw(Gg, pos, with_labels=True, node_size=4000, labels=node_labels, node_color='lightblue', font_size=8, font_color='black')
+        plt.title(f"Network of the UDs. Nodes: {len(Gg.nodes)}")
+        plt.show()
 
-    # Alive
-    ud_vivas = [ud for id, ud in uds_copy.items() if ud.activa == True]
-    id_ud_vivas = [ud.id for ud in ud_vivas]
-
-    for viva in ud_vivas:
-        Gg.add_node(viva.id, ID=viva.id, age=viva.age, filhos=len(viva.parentes[2]) if viva.parentes[2] is not None else 0)
-        for n in disentangle_function(viva.parentes[:9]):
-            if n in id_ud_vivas:
-                Gg.add_edge(viva.id, n)
-
-    # Vis_graph
-    pos = nx.spring_layout(Gg, k=1)
-    node_labels = {node: f"ID: {Gg.nodes[node]['ID']}\nAge: {Gg.nodes[node]['age']}\nChildren: {Gg.nodes[node]['filhos']}" for node in Gg.nodes}
-    plt.figure(figsize=(17, 10))
-    nx.draw(Gg, pos, with_labels=True, node_size=4000, labels=node_labels, node_color='lightblue', font_size=8, font_color='black')
-    plt.title(f"Network of the UDs. Nodes: {len(Gg.nodes)}")
-    plt.show()
+        if measures == True:
+            # Centrality and general measures
+            centralidad(Gg)
+            gerais(Gg)
+        print("----------------------------")
+        return Gg
     
-    if measures == True:
-        # Centrality and general measures
-        centralidad(Gg)
-        gerais(Gg)
-    print("----------------------------")
+    if uds_copy != None:
+        Gg = nx.Graph()
+        # Alive
+        ud_vivas = [ud for id, ud in uds_copy.items() if ud.activa == True]
+        id_ud_vivas = [ud.id for ud in ud_vivas]
+
+        for viva in ud_vivas:
+            Gg.add_node(viva.id, ID=viva.id, age=viva.age, 
+                        Community=viva.community, 
+                        filhos=len(viva.parentes[2]) if viva.parentes[2] is not None else 0)
+            
+            for n in disentangle_function(viva.parentes[:9]):
+                if n in id_ud_vivas:
+                    Gg.add_edge(viva.id, n)
+        Gg = draw_network(Gg, measures)
+        return Gg
+        
+    else:
+        def network_by_step(df_filtrado):
+            # Graph
+            Gg = nx.Graph()
+            # Nodes
+            nodos = df_filtrado["source"].tolist() + df_filtrado["target"].tolist()
+            Gg.add_nodes_from(set(nodos))
+            # Connections
+            for i, fila in df_filtrado.iterrows():
+                source = fila["source"]
+                target = fila["target"]
+                Gg.add_edge(source, target)
+            return Gg
+        
+        steps_unicos = df_step["step"].unique()
+        print(steps_unicos)
+        for step in steps_unicos:
+            # Filtra el dataframe por el valor actual de step
+            df_filtrado = df_step[df_step["step"] == step]
+
+            # Crea la red para el step actual
+            G_step = network_by_step(df_filtrado)
+            draw_network(G_step, measures)
+#             Gg = draw_network(Gg, measures)
+#         return Gg
+
     
 #Centralities  
 def centralidad(Gg):
@@ -58,7 +108,10 @@ def centralidad(Gg):
     # (degree centrality)
     degree_centrality = nx.degree_centrality(Gg)
     # (Eigenvector centrality)
-    eigenvector_centrality = nx.eigenvector_centrality(Gg)
+    try:
+        eigenvector_centrality = nx.eigenvector_centrality(Gg)
+    except:
+        eigenvector_centrality = nx.eigenvector_centrality_numpy(Gg)
     # Print first 10
     print("Betweenness Centrality:")
     print({k: v for k, v in sorted(betweenness_centrality.items(), key=lambda item: item[1], reverse=True)[:10]})
@@ -120,57 +173,281 @@ def gerais(Gg):
     print(f"Average shorthest path: {short}")
     print(f"Coeficiente de Clustering Promedio (cluster maior): {cluster}")
 
-#Code for the p-graph. If measures == True, get tables for the in and out degree
-def p_graph(uds_copy, measures): 
-    G = nx.DiGraph()
-    # Alive
-    ud_vivas = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa == True}
-    id_ud_vivas = [id_ud for id_ud in ud_vivas.keys()]
+def network_measures(Gg):
+    # Density
+    density = nx.density(Gg)
 
-    # First the nodes
+    # Nodes and edges
+    num_nodes = Gg.number_of_nodes()
+    num_edges = Gg.number_of_edges()
+
+    # Strongly Connected Components
+    strongly_connected_components = list(nx.strongly_connected_components(Gg))
+    num_strongly_connected_components = len(strongly_connected_components)
+    largest_strongly_connected_component_size = max(len(comp) for comp in strongly_connected_components)
+
+    # Weakly Connected Components
+    weakly_connected_components = list(nx.weakly_connected_components(Gg))
+    num_weakly_connected_components = len(weakly_connected_components)
+    largest_weakly_connected_component_size = max(len(comp) for comp in weakly_connected_components)
+
+    # Diameter and Average Shortest Path Length
+    if nx.is_strongly_connected(Gg):
+        diameter = nx.diameter(Gg)
+        avg_shortest_path_length = nx.average_shortest_path_length(Gg)
+    else:
+        diameter = float('inf')  # Infinite diameter if the graph is not strongly connected
+        avg_shortest_path_length = float('inf')
+
+    # Transitivity
+    transitivity = nx.transitivity(Gg.to_undirected())
+
+    # Reciprocity
+    reciprocity = nx.reciprocity(Gg)
+
+    # Assortativity
+    assortativity = nx.degree_assortativity_coefficient(Gg)
+
+    # Show them
+    print(f"Densidade: {density}")
+    print(f"Número de nós: {num_nodes}")
+    print(f"Número de aristas: {num_edges}")
+    print(f"Número de componentes fortemente conectadas: {num_strongly_connected_components}")
+    print(f"Tamanho do maior componente fortemente conectado: {largest_strongly_connected_component_size}")
+    print(f"Número de componentes fracamente conectadas: {num_weakly_connected_components}")
+    print(f"Tamanho do maior componente fracamente conectado: {largest_weakly_connected_component_size}")
+    print(f"Diâmetro: {diameter}")
+    print(f"Comprimento médio do caminho mais curto: {avg_shortest_path_length}")
+    print(f"Transitividade: {transitivity}")
+    print(f"Reciprocidade: {reciprocity}")
+    print(f"Assortatividade: {assortativity}")    
+    
+def gerais_directed(Gg):
+    # General measures for a directed graph
+    # Density
+    density = nx.density(Gg)
+
+    # Nodes and edges
+    num_nodes = Gg.number_of_nodes()
+    num_edges = Gg.number_of_edges()
+
+    # If strongly connected
+    if nx.is_strongly_connected(Gg):
+        diameter = nx.diameter(Gg)
+        short = nx.average_shortest_path_length(Gg)
+        cluster = nx.average_clustering(Gg.to_undirected())
+    else:
+        # Diameter, and other things
+        components = [Gg.subgraph(component) for component in nx.strongly_connected_components(Gg)]
+        diameter_by_component = [nx.diameter(component) for component in components if nx.is_strongly_connected(component)]
+        short_per_component = [nx.average_shortest_path_length(component) for component in components if nx.is_strongly_connected(component)]
+        clustering_per_component = [nx.average_clustering(component.to_undirected()) for component in components]
+        diameter = max(diameter_by_component) if diameter_by_component else float('inf')
+        short = max(short_per_component) if short_per_component else float('inf')
+        cluster = max(clustering_per_component) if clustering_per_component else 0
+
+    # Transitivity (also known as the global clustering coefficient)
+    transitivity = nx.transitivity(Gg.to_undirected())
+
+    # Show them:
+    print(f"Densidade: {density}")
+    print(f"Número de nós: {num_nodes}")
+    print(f"Número de aristas: {num_edges}")
+    print(f"Diámetro: {diameter}")
+    print(f"Transitividade: {transitivity}")
+    print(f"Average shortest path: {short}")
+    print(f"Coeficiente de Clustering Promedio (cluster maior): {cluster}")
+
+
+def p_graph(uds_copy, measures=False):
+    G = nx.DiGraph()
+
+    # Actives
+    ud_vivas = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+
+    # Agregar nodos al grafo con atributos (incluyendo edad)
     for id_ud, ud in ud_vivas.items():
         G.add_node(id_ud, ID=id_ud, age=ud.age, filhos=len(ud.parentes[2]) if ud.parentes[2] is not None else 0)
 
-    # Then to their parents
+    # Agregar aristas (edges) entre nodos y sus padres
     for id_ud, ud in ud_vivas.items():
-        if ud.parentes[0] is not None and ud.parentes[0] in id_ud_vivas:
+        if ud.parentes[0] is not None and ud.parentes[0] in ud_vivas:
             G.add_edge(id_ud, ud.parentes[0])
-        if ud.parentes[1] is not None and ud.parentes[1] in id_ud_vivas:
-            G.add_edge(id_ud, ud.parentes[1], color='red')  # Set edge color to red
+        if ud.parentes[1] is not None and ud.parentes[1] in ud_vivas:
+            G.add_edge(id_ud, ud.parentes[1], color='red')  # Agregar atributo de color a la arista
 
-    # Grafo
-    pos = nx.spring_layout(G, k=1)
-    node_labels = {node: f"ID: {G.nodes[node]['ID']}\nAge: {G.nodes[node]['age']}\nChildren: {G.nodes[node]['filhos']}" for node in G.nodes}
-    edge_colors = [G[u][v].get('color', 'blue') for u, v in G.edges]  # Get edge colors
-    plt.figure(figsize=(17, 10))
-    nx.draw_networkx_nodes(G, pos, node_size=1000, node_color='lightblue')
-    nx.draw_networkx_labels(G, pos, labels=node_labels, font_size=8, font_color='black')
-    nx.draw_networkx_edges(G, pos, edge_color=edge_colors, arrows=True, arrowsize=40)
-    plt.title("Directed graph - Network of UDs")
-    plt.show()
-    #print(len(G.nodes))
+    # Definir posiciones aleatorias iniciales en el eje x
+    node_pos = {id_ud: (random.random(), ud.age) for id_ud, ud in ud_vivas.items()}
     
-    if measures == True:
-        # Create histograms for outdegree and indegree
+    for id_ud, ud in ud_vivas.items():
+        if ud.parentes[0] is not None and ud.parentes[0] in node_pos:
+            parent_x = (node_pos[ud.parentes[0]][0] + random.choice([-0.005, 0.005]))
+            node_pos[id_ud] = (parent_x, ud.age)
+
+    # Dibujar el grafo
+    edge_colors = [G[u][v].get('color', 'blue') for u, v in G.edges]  # Obtener colores de las aristas
+
+    plt.figure(figsize=(17, 10))
+    nx.draw_networkx_nodes(G, node_pos, node_size=100, node_color='lightblue')
+    nx.draw_networkx_edges(G, node_pos, edge_color=edge_colors, arrows=True, arrowsize=10)
+    plt.title("P graph")
+    plt.xlabel('')
+    plt.ylabel('Age')
+    plt.show()
+
+    if measures:
+        # Histograms
         outdegree_values = [outdegree for _, outdegree in G.out_degree()]
         indegree_values = [indegree for _, indegree in G.in_degree()]
 
         plt.figure(figsize=(12, 6))
         plt.subplot(1, 2, 1)
         plt.hist(outdegree_values, bins=20, color='blue', alpha=0.7)
-        plt.title('Outdegree Distribution of the P-Graph')
+        plt.title('Distribución de Outdegree del P-Graph')
+        plt.xlabel('Outdegree')
+        plt.ylabel('Frecuencia')
+
+        plt.subplot(1, 2, 2)
+        plt.hist(indegree_values, bins=20, color='green', alpha=0.7)
+        plt.title('Distribución de Indegree del P-Graph')
+        plt.xlabel('Indegree')
+        plt.ylabel('Frecuencia')
+
+        plt.tight_layout()
+        plt.show()
+
+    return G
+
+def p_graph_attribute(uds_copy, attribute, measures=False, vis=False):
+    G = nx.DiGraph()
+    ud_vivas = uds_copy
+
+    # Nodes
+    for id_ud, ud in ud_vivas.items():
+        node_attrs = {
+            'ID': id_ud,
+            'age': ud.age,
+            'children': ud.parentes[2] if ud.parentes[2] is not None else [],
+            'father': ud.parentes[0] if ud.parentes[0] in ud_vivas else None, 
+            'mother': ud.parentes[1] if ud.parentes[1] in ud_vivas else None,
+            attribute: getattr(ud, attribute, None)
+        }
+        G.add_node(id_ud, **node_attrs)
+
+    # Links
+    for id_ud, ud in ud_vivas.items():
+        if ud.parentes[0] is not None and ud.parentes[0] in ud_vivas:
+            G.add_edge(id_ud, ud.parentes[0])
+        if ud.parentes[1] is not None and ud.parentes[1] in ud_vivas:
+            G.add_edge(id_ud, ud.parentes[1], color='red')
+
+    # Atributes
+    attribute_values = set(getattr(ud, attribute) for ud in ud_vivas.values())
+    if vis:
+        # Position according to the attribute. To visualize the patterns... if possible
+        pos = {}
+        offset = 5  # Separation between groups
+        for i, value in enumerate(attribute_values):
+            nodes_in_value = [id_ud for id_ud, ud in ud_vivas.items() if getattr(ud, attribute) == value]
+            for node in nodes_in_value:
+                pos[node] = (random.random() + i * offset, ud_vivas[node].age)
+
+        # colors
+        edge_colors = [G[u][v].get('color', 'blue') for u, v in G.edges]
+        # Graph
+        plt.figure(figsize=(17, 10))
+        nx.draw_networkx_nodes(G, pos, node_size=25)
+        nx.draw_networkx_edges(G, pos, edge_color=edge_colors, arrows=True, arrowsize=10)
+        nx.draw_networkx_labels(G, pos, labels={node: str(ud_vivas[node].id) for node in G.nodes}, font_size=12)  # Add labels for node ages
+        plt.title(f"P graph by {attribute}")
+        plt.xlabel('')
+        plt.ylabel('Age')
+        plt.show()
+
+    if measures:
+        # Histogram
+        outdegree_values = [outdegree for _, outdegree in G.out_degree()]
+        indegree_values = [indegree for _, indegree in G.in_degree()]
+
+        plt.figure(figsize=(12, 6))
+        plt.subplot(1, 2, 1)
+        plt.hist(outdegree_values, bins=20, color='blue', alpha=0.7)
+        plt.title(f"P-graph outdegree's distribution")
         plt.xlabel('Outdegree')
         plt.ylabel('Frequency')
 
         plt.subplot(1, 2, 2)
         plt.hist(indegree_values, bins=20, color='green', alpha=0.7)
-        plt.title('Indegree Distribution of the P-Graph')
+        plt.title(f"P-graph indegree's distribution")
         plt.xlabel('Indegree')
         plt.ylabel('Frequency')
 
         plt.tight_layout()
         plt.show()
+        gerais_directed(G)
+        network_measures(G)
+        
 
+    return G
+
+def marriage_graph_attribute(uds_copy, attribute, measures=False):
+    G = nx.Graph()
+    ud_vivas = uds_copy
+
+    # Nodes
+    for id_ud, ud in ud_vivas.items():
+        node_attrs = {
+            'ID': id_ud,
+            'age': ud.age,
+            'filhos': len(ud.parentes[2]) if ud.parentes[2] is not None else 0,
+            attribute: getattr(ud, attribute, None)
+        }
+        G.add_node(id_ud, **node_attrs)
+
+    # Links. Here are only the marriages
+    for id_ud, ud in ud_vivas.items():
+        if ud.parentes[9] is not None:
+            if isinstance(ud.parentes[9], list):
+                for parent in ud.parentes[9]:
+                    if parent in ud_vivas:
+                        G.add_edge(id_ud, parent)
+            else:
+                if ud.parentes[9] in ud_vivas:
+                    G.add_edge(id_ud, ud.parentes[9])
+
+    # Attributes
+    attribute_values = set(getattr(ud, attribute) for ud in ud_vivas.values())
+    
+    # Position according to the attribute
+    pos = {}
+    offset = 5  # Separation
+    for i, value in enumerate(attribute_values):
+        nodes_in_value = [id_ud for id_ud, ud in ud_vivas.items() if getattr(ud, attribute) == value]
+        for node in nodes_in_value:
+            pos[node] = (random.random() + i * offset, ud_vivas[node].age)
+
+    # Graph
+    plt.figure(figsize=(17, 10))
+    nx.draw_networkx_nodes(G, pos, node_size=25, node_color='black')
+    nx.draw_networkx_edges(G, pos, edge_color='blue')
+    nx.draw_networkx_labels(G, pos, labels={node: str(ud_vivas[node].id) for node in G.nodes}, font_size=12)
+    plt.title(f"Marriage Graph by {attribute}")
+    plt.xlabel('')
+    plt.ylabel('Age')
+    plt.show()
+
+    if measures:
+        # histograms
+        degree_values = [degree for _, degree in G.degree()]
+
+        plt.figure(figsize=(12, 6))
+        plt.hist(degree_values, bins=20, color='blue', alpha=0.7)
+        plt.title(f"Marriage graph's Degree distribution")
+        plt.xlabel('Degree')
+        plt.ylabel('Frequency')
+        plt.show()
+
+    return G
         
 def egocentric_indiv(UD):
     for id_ud, ud in UD.uds.items():
@@ -202,7 +479,7 @@ def egocentric_indiv(UD):
         plt.show()
     
 def small_ego_genealogy(ego_ud):
-    G = nx.DiGraph()  # Cambiar a grafo dirigido
+    G = nx.DiGraph() 
 
     # Ego node
     ego_id = ego_ud.id
@@ -284,10 +561,10 @@ def small_ego_genealogy(ego_ud):
         elif G.nodes[node]['label'].endswith('2'):
             pos[node][1] = 2
         else:
-            pos[node][1] = 0  # Nodos de nivel 0 (ego y hermanos)
+            pos[node][1] = 0
 
     # Space
-    layer_spacing = 0.2  # space between levels
+    layer_spacing = 0.2  
     for level in set([data['label'][-1] for data in G.nodes.values()]):
         nodes_at_level = [node for node, data in G.nodes(data=True) if data['label'].endswith(level)]
         for i, node in enumerate(nodes_at_level):
@@ -298,9 +575,9 @@ def small_ego_genealogy(ego_ud):
     for u, v, data in G.edges(data=True):
         if 'tipo_de_relacion' in data:
             if data['tipo_de_relacion'] == 'madre':
-                edge_colors.append('red')  # Color para los enlaces maternos
+                edge_colors.append('red')  # matrilineal colors
             else:
-                edge_colors.append('blue')  # Otro color para otros enlaces
+                edge_colors.append('blue') 
         else:
             edge_colors.append('blue')
 
@@ -308,6 +585,62 @@ def small_ego_genealogy(ego_ud):
     node_labels = {node: G.nodes[node]['label'] for node in G.nodes}
     plt.figure(figsize=(10, 6))
     nx.draw(G, pos, with_labels=True, labels=node_labels, node_size=3000, node_color='lightblue', font_size=8, font_color='black', edge_color=edge_colors, arrowsize=30, arrowstyle='<-')
-    plt.title(f"Relaciones de Parentesco para UD {ego_id}")
+    plt.title(f"UD {ego_id}'s Kinship network")
     plt.show()
+    
+    
+def count_links_between_and_within(G, attribute):
+    #This function counts the percentage of links inside and between certain attribute.
+    
+    total_edges = G.number_of_edges()
+    internal_edges = defaultdict(int)
+    external_edges = defaultdict(int)
+    
+    for u, v in G.edges:
+        u_attr = G.nodes[u][attribute]
+        v_attr = G.nodes[v][attribute]
+        
+        if u_attr == v_attr:
+            internal_edges[u_attr] += 1
+        else:
+            external_edges[(u_attr, v_attr)] += 1
+    
+    # Percentages
+    percent_internal = {k: (v / total_edges) * 100 for k, v in internal_edges.items()}
+    percent_external = {k: (v / total_edges) * 100 for k, v in external_edges.items()}
+    
+    print(f"Total de enlaces: {total_edges}")
+    for k, v in percent_internal.items():
+        print(f"Links inside the {attribute} '{k}': {v:.2f}%")
+    for k, v in percent_external.items():
+        print(f"Linkgs outside the {attribute} '{k[0]}' and '{k[1]}': {v:.2f}%")
+    
+    return {
+        'percent_internal': percent_internal,
+        'percent_external': percent_external
+    }
+
+    
+    
+##### Methods when there is no clan
+#I still have to change it to get the unique and so on. I can use this to the clan part too.
+#Documents format
+    #List [step, id, age, parentes, community, varieties, variedades únicas]
+# def general_charactersitics_data(G, step, uds, dataset, data_conections, final = False):
+#     if final == False:
+#         for ud in uds.values():
+#             dataset.append([step, ud.id, ud.age, ud.parentes, ud.community, ud.varieties])# "unique"]
+#         #Network information
+#         edges = list(G.edges())
+#         df_edges = pd.DataFrame(edges, columns=['source', 'target'])
+#         df_edges.insert(0, 'step', step)
+#         df_final_edges = pd.concat([data_conections, df_edges], ignore_index=True)
+#         return dataset, df_final_edges
+            
+
+#     else: #sabe the final documents.
+#         df = pd.DataFrame(dataset)
+#         df.columns = ["Step", "ID", "Age", "Parents", "Community", "Varieties"]# "Unique"]
+#         return df, data_conections
+
     
