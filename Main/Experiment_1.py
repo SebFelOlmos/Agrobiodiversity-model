@@ -25,10 +25,72 @@ from model_class.Variety import Variety
 from model_class.UD_clan import *
 from model_class.UD_aleatory_inheritance_clan import *
 
+all = ''
+while all not in ['y','n']:
+    all = input('''
+Hi! you want to execute the simulations for the first experiment!
+Remember, all the results are in the outputs folder
+
+Do you want to see the diversity by every system? if you do not, you go directly to the choice of the system.
+So, do you want to? (y/n)
+''')
+if all == 'y':
+    folder_name = os.path.join('Outputs', 'First experiments')
+    inherit_endo_path = os.path.join(folder_name, 'Endogamy','inherit_data_endo.json')
+    with open(inherit_endo_path, 'r') as json_file:
+            loaded_data_inherit_endo = json.load(json_file)
+    inherit_dual_path = os.path.join(folder_name, 'Dual Organization','inherit_data_dual.json')
+    with open(inherit_dual_path, 'r') as json_file:
+            loaded_data_inherit_dual = json.load(json_file)
+    inherit_restricted_path = os.path.join(folder_name, 'Generalized Exchange','inherit_data_generalized.json')
+    with open(inherit_restricted_path, 'r') as json_file:
+            loaded_data_inherit_restricted = json.load(json_file)
+    # For the plot
+    mean_div_com_restricted = []
+    std_div_com_restricted = []
+    mean_div_com_dual = []
+    std_div_com_dual = []
+    mean_div_com_endo = []
+    std_div_com_endo = []
+    inheritance = ['0', '25', '50', '75', '100', 'False']
+
+    # Calculate mean and std deviation
+    for i in inheritance:
+        mean_div_com_restricted.append(np.mean(loaded_data_inherit_restricted[i][1]))
+        std_div_com_restricted.append(np.std(loaded_data_inherit_restricted[i][1]))
+        mean_div_com_dual.append(np.mean(loaded_data_inherit_dual[i][1]))
+        std_div_com_dual.append(np.std(loaded_data_inherit_dual[i][1]))
+        mean_div_com_endo.append(np.mean(loaded_data_inherit_endo[i][1]))
+        std_div_com_endo.append(np.std(loaded_data_inherit_endo[i][1]))
+
+    inheritance_possibilities = ['0', '25', '50', '75', '100', 'Random']
+
+    # Set color palette
+    palette = sns.color_palette("tab10")
+
+    # Plot with error bars using colors from tab10
+    plt.figure(figsize=(10, 6))
+    plt.errorbar(inheritance_possibilities, mean_div_com_restricted, yerr=std_div_com_restricted,
+                fmt='o', capsize=5, capthick=2, color=palette[0], ecolor=palette[0], label='Generalized')
+    plt.errorbar(inheritance_possibilities, mean_div_com_dual, yerr=std_div_com_dual,
+                fmt='s', capsize=5, capthick=2, color=palette[1], ecolor=palette[1], label='Dual Organization')
+    plt.errorbar(inheritance_possibilities, mean_div_com_endo, yerr=std_div_com_endo,
+                fmt='^', capsize=5, capthick=2, color=palette[2], ecolor=palette[2], label='Endogamy')
+
+    plt.xlabel('Percentage of matrilineal inheritance')
+    plt.ylabel('Varieties')
+    plt.ylim(0, 10)
+    plt.title('Diversity at the community level')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    plt.savefig(os.path.join(folder_name, 'all_kinship_systems.png'), dpi=300, bbox_inches="tight")
+    
+
 choice = ''
 while choice not in ['1','2', '3']:
     choice = input('''
-Hi! you want to execute the simulations for the first experiment! 
+Here we go with the simulations!
 I am not going to lie! This may take time... 
 So, what kinship system you want to try?
     1 - Endogamy
