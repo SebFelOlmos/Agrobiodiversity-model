@@ -69,7 +69,7 @@ class UD_endogamy:
         if random.random() < prob_death:
             self.activa = False
 
-    def buscar_ud(self, uds_systema, media, matrilinear): #metodo para buscar e reproducir.
+    def buscar_ud(self, uds_systema, media, matrilinear, limit=150): #metodo para buscar e reproducir.
         #Função para facilitar a busqueda de ids dentro da lista de parentes.
         def is_id_in_nested_lists(id_ud, nested_list):
             if id_ud in nested_list:
@@ -251,7 +251,9 @@ class UD_endogamy:
                 
                 # Herdar sementes
                 novo_nodo.inherit(matrilinear)
-                
+                if len(uds_systema) >= limit:
+                    self.replace(uds_systema)
+
                 #return None
             else:
                 #print(f"UD {self.id} não achou cassal.")
@@ -274,7 +276,15 @@ class UD_endogamy:
             vari_mae = random.sample(vm, heredar_mae)  # Random sample from mother's varieties
             vari_pai = random.sample(vp, heredar_pai)  # Random sample from father's varieties
             # Extend the varieties list with the combined samples
-            self.varieties.extend(vari_mae + vari_pai)     
+            self.varieties.extend(vari_mae + vari_pai)
+    def replace(self, alive):
+        ages = [obj.age for obj in alive.values()]
+        totage = sum(ages)
+        proba = [age/totage for age in ages]
+        ids = list(alive.keys())
+        choosen_id = random.choices(ids, weights=proba,k=1)[0]
+        #print('eliminamos la', choosen_id)
+        self.uds[choosen_id].activa = False 
         
 class UD_dual_organization:
     ## CLase UD DUAL ORGANIZATION
@@ -324,7 +334,7 @@ class UD_dual_organization:
         if random.random() < prob_death:
             self.activa = False
 
-    def buscar_ud(self, uds_systema, media, matrilinear, lineality, percentage_incest = 0.5): #metodo para buscar e reproducir.
+    def buscar_ud(self, uds_systema, media, matrilinear, lineality, percentage_incest = 0.5, limit=150): #metodo para buscar e reproducir.
         #Function to get a random couple according to the clan.
         #FUncao pare
         def select_new_ud(selected_ud, uds_disponiveis, percentage_incest):
@@ -530,7 +540,8 @@ class UD_dual_organization:
                 
                 # Herdar sementes
                 novo_nodo.inherit(matrilinear)
-                
+                if len(uds_systema) >= limit:
+                    self.replace(uds_systema)
                 #return None
             else:
                 #print(f"UD {self.id} não achou cassal.")
@@ -554,6 +565,13 @@ class UD_dual_organization:
             vari_pai = random.sample(vp, heredar_pai)  # Random sample from father's varieties
             # Extend the varieties list with the combined samples
             self.varieties.extend(vari_mae + vari_pai)
+    def replace(self, alive):
+        ages = [obj.age for obj in alive.values()]
+        totage = sum(ages)
+        proba = [age/totage for age in ages]
+        ids = list(alive.keys())
+        choosen_id = random.choices(ids, weights=proba,k=1)[0]
+        self.uds[choosen_id].activa = False
         
 class UD_generalized:
     ## CLase UD GENERALIZED
@@ -602,7 +620,7 @@ class UD_generalized:
         if random.random() < prob_death:
             self.activa = False
 
-    def buscar_ud(self, uds_systema, media, matrilinear, lineality, percentage_incest = 0.5): #metodo para buscar e reproducir.
+    def buscar_ud(self, uds_systema, media, matrilinear, lineality, percentage_incest = 0.5, limit = 150): #metodo para buscar e reproducir.
         #Function to get a random couple
         def select_new_ud(selected_ud, uds_disponiveis, percentage_incest):
             if len(uds_disponiveis) == 0:
@@ -815,6 +833,8 @@ class UD_generalized:
                 
                 # Herdar sementes
                 novo_nodo.inherit(matrilinear)
+                if len(uds_systema) >= limit:
+                    self.replace(uds_systema)
                 
                 #return None
             else:
@@ -839,3 +859,10 @@ class UD_generalized:
             vari_pai = random.sample(vp, heredar_pai)  # Random sample from father's varieties
             # Extend the varieties list with the combined samples
             self.varieties.extend(vari_mae + vari_pai)
+    def replace(self, alive):
+        ages = [obj.age for obj in alive.values()]
+        totage = sum(ages)
+        proba = [age/totage for age in ages]
+        ids = list(alive.keys())
+        choosen_id = random.choices(ids, weights=proba,k=1)[0]
+        self.uds[choosen_id].activa = False

@@ -150,6 +150,7 @@ if choice == '1': #Kinship validation
     final_pop = []
     contador = 0
     while contador < 100:
+        print(f'simulation {contador+1}')
         #### Initialization dual_organization
         ## Clans
         clanes = [1,2]
@@ -177,20 +178,15 @@ if choice == '1': #Kinship validation
             items = list(uds_copy.items())
             random.shuffle(items)
             uds_copy = dict(items)
-            alive = len(uds_copy)
-            if alive > 200 and (media == original_media):
-                media -= media//2
-                if media >= 4:
-                    media = media //2
-            elif alive < 150 and media < original_media:
-                media = original_media
             if not uds_copy:
                 break
             for id_ud, ud in uds_copy.items():
-                ud.ter_filho()
-                ud.buscar_ud(uds_copy, media, 50, True, 0.2)
-                ud.incrementar_idade()
-                ud.death_probability(prob_morte)
+                if ud.activa == True:
+                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                    ud.ter_filho()
+                    ud.buscar_ud(available, media, 50, True, 0.2)
+                    ud.incrementar_idade()
+                    ud.death_probability(prob_morte)
         if uds_copy:
             contador += 1
             final_pop.append(len(uds_copy))
@@ -247,6 +243,7 @@ if choice == '1': #Kinship validation
     final_pop = []
     contador = 0
     while contador < 100:
+        print(f'simulation {contador+1}')
         clanes = [1,2,3]
         clans = (clanes * (iniciais // 3)) + clanes[:(iniciais % 3)]# Just 3 clans
         random.shuffle(clans)
@@ -274,20 +271,15 @@ if choice == '1': #Kinship validation
             items = list(uds_copy.items())
             random.shuffle(items)
             uds_copy = dict(items)
-            alive = len(uds_copy)
-            if alive > 200 and (media == original_media): 
-                media -= media//2
-                if media >= 4:
-                    media = media //2
-            elif alive < 150 and media < original_media:
-                media = original_media
             if not uds_copy:
                 break
             for id_ud, ud in uds_copy.items():
-                ud.ter_filho()
-                ud.buscar_ud(uds_copy, media, 50, True, 0.2)
-                ud.incrementar_idade()
-                ud.death_probability(prob_morte)
+                if ud.activa == True:
+                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                    ud.ter_filho()
+                    ud.buscar_ud(available, media, 50, True, 0.2)
+                    ud.incrementar_idade()
+                    ud.death_probability(prob_morte)
         if uds_copy and any(UD.clan == 3 for id, UD in uds_copy.items()):
             contador += 1
             final_pop.append(len(uds_copy))
@@ -401,7 +393,7 @@ if choice == '1': #Kinship validation
 
 else: #Populational behavior
     # Method for heatmaps...!
-    def plot_heatmap(data, alphas, betas, alpha, beta, variable, colorbar_range=(0, 3000), figsize=(7, 5)):
+    def plot_heatmap(data, alphas, betas, alpha, beta, variable, colorbar_range=(0, 150), figsize=(7, 5)):
         """
         Plot a heatmap with specific configuration for colorbar and labels.
 
@@ -488,7 +480,7 @@ else: #Populational behavior
             mbetas = np.linspace(10,m,int(m/10)) # Initial UDs: from 10 to m
             mM = np.empty((len(malphas), len(mbetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
             experiments = 110
 
@@ -538,10 +530,12 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break            
                             for id_ud, ud in uds_copy.items():
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, int(media), 0)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, int(media), 0)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:
@@ -594,10 +588,10 @@ else: #Populational behavior
             mM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             mM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive', (0, 3000))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Endo_beta_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Endo_beta_fixed_mean.png')}")
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std', (0, 3000))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Endo_beta_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Endo_beta_fixed_std.png')}")
         elif variable_choice == '2': # Initial UDs
@@ -608,7 +602,7 @@ else: #Populational behavior
             ubetas = np.linspace(0.055, 0.075, 5) # Beta from 0.055 to 0.075
             uM = np.empty((len(ualphas), len(ubetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
             experiments = 110
 
@@ -661,9 +655,9 @@ else: #Populational behavior
                                 break            
                             for id_ud, ud in uds_copy.items():
                                 if ud.activa == True:
-                                    any_ud_active = True
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
                                     ud.ter_filho()
-                                    ud.buscar_ud(uds_copy, int(media),0)
+                                    ud.buscar_ud(available, int(media),0)
                                     ud.incrementar_idade()
                                     ud.death_probability(prob_morte)
                             # Collecting data
@@ -724,10 +718,10 @@ else: #Populational behavior
             uM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             uM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(uM_datos, ualphas, ubetas, 'Mean Children', 'Beta', 'alive', (0, 3000))
+            plot = plot_heatmap(uM_datos, ualphas, ubetas, 'Mean Children', 'Beta', 'alive', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Endo_UDin_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Endo_UDin_fixed_mean.png')}")
-            plot_heatmap(uM_datos, ualphas, ubetas, 'Mean Children', 'Beta', 'std', (0, 3000))
+            plot_heatmap(uM_datos, ualphas, ubetas, 'Mean Children', 'Beta', 'std', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Endo_UDin_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Endo_UDin_fixed_std.png')}")
         else: # Mean of children for UD
@@ -738,7 +732,7 @@ else: #Populational behavior
             hbetas = np.linspace(0.055, 0.075, 5) # Beta from 0.055 to 0.075
             hM = np.empty((len(halphas), len(hbetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
             experiments = 110
 
@@ -789,9 +783,9 @@ else: #Populational behavior
                                 break               
                             for id_ud, ud in uds_copy.items():
                                 if ud.activa == True:
-                                    any_ud_active = True
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
                                     ud.ter_filho()
-                                    ud.buscar_ud(uds_copy, int(media),0)
+                                    ud.buscar_ud(available, int(media),0)
                                     ud.incrementar_idade()
                                     ud.death_probability(prob_morte)
                             # Collecting data
@@ -871,9 +865,9 @@ else: #Populational behavior
             mbetas = np.linspace(10,m,int(m/10)) # Initial UDs: from 10 to m
             mM = np.empty((len(malphas), len(mbetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
-            experiments = 130
+            experiments = 150
 
             # For data of behaviour
             datos_1 = np.empty((len(malphas), len(mbetas)), dtype=object)
@@ -925,22 +919,18 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break
                             for id_ud, ud in uds_copy.items():
-                                any_ud_active = True
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, int(media),0 , True, 0.2)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, int(media),0 , True, 0.2)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:
                                 viv = len([ud for id, ud in uds_copy.items() if ud.activa])
                                 #mort = len([ud for id, ud in uds_copy.items() if not ud.activa])
                                 vivas_puntos_vista.append(viv)
-            #                     mortas_puntos_vista.append(mort)
-            #                 if t%100 == 0:
-            #                     print(f"tamos en tiempo {t} con vivas {viv}")
-                        # Average Annual Population Growth
-                        # First 0 avoid errors 
                         indice_primer_cero = np.where(np.array(vivas_tasa_crecimiento) == 0)[0]
                         if len(indice_primer_cero) > 0:
                             # Get growth rate before the 0
@@ -987,10 +977,10 @@ else: #Populational behavior
             mM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             mM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive', (0, 3000))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Dual_beta_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Dual_beta_fixed_mean.png')}")
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std', (0, 3000))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Dual_beta_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Dual_beta_fixed_std.png')}")
         elif variable_choice == '2': # Initial UDs
@@ -1001,9 +991,9 @@ else: #Populational behavior
             ubetas = np.linspace(0.055, 0.075, 5) # Beta from 0.045 to 0.075
             uM = np.empty((len(ualphas), len(ubetas)), dtype=object)
             punto_vista = 50
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
-            experiments = 130
+            experiments = 150
 
             start = time.time()
             # For data of behaviour
@@ -1055,10 +1045,12 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break
                             for id_ud, ud in uds_copy.items():
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, int(media),0 , True, 0.2)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, int(media),0 , True, 0.2)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:
@@ -1126,9 +1118,9 @@ else: #Populational behavior
             hbetas = np.linspace(0.055, 0.075, 5) # Beta from 0.055 to 0.075
             hM = np.empty((len(halphas), len(hbetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
-            experiments = 130
+            experiments = 150
             start = time.time()
             # For data of behaviour
             datos_3 = np.empty((len(halphas), len(hbetas)), dtype=object)
@@ -1179,10 +1171,12 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break
                             for id_ud, ud in uds_copy.items():
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, int(media),0 , True, 0.2)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, int(media),0 , True, 0.2)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:
@@ -1254,9 +1248,9 @@ else: #Populational behavior
             mbetas = np.linspace(10,m,int(m/10)) # Initial UDs: from 10 to m
             mM = np.empty((len(malphas), len(mbetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
-            experiments = 130
+            experiments = 250
             # For data of behaviour
             datos_1 = np.empty((len(malphas), len(mbetas)), dtype=object)
             print(mM.shape)
@@ -1308,10 +1302,12 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break
                             for id_ud, ud in uds_copy.items():
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, media, 0, True, 0.2)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, media, 0, True, 0.2)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:
@@ -1383,9 +1379,9 @@ else: #Populational behavior
             ubetas = np.linspace(0.055, 0.075, 5) # Beta from 0.055 to 0.075
             uM = np.empty((len(ualphas), len(ubetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 100
             tempo = list(range(0,tiempo,punto_vista))
-            experiments = 130
+            experiments = 250
 
             start = time.time()
             # For data of behaviour
@@ -1438,10 +1434,12 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break
                             for id_ud, ud in uds_copy.items():
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, media, 0, True, 0.2)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, media, 0, True, 0.2)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:
@@ -1509,9 +1507,9 @@ else: #Populational behavior
             hbetas = np.linspace(0.055, 0.075, 5) # Beta from 0.055 to 0.075
             hM = np.empty((len(halphas), len(hbetas)), dtype=object)
             punto_vista = 2
-            tiempo = 700
+            tiempo = 1000
             tempo = list(range(0,tiempo,punto_vista))
-            experiments = 130
+            experiments = 250
 
             start = time.time()
             # For data of behaviour
@@ -1564,10 +1562,12 @@ else: #Populational behavior
                                 #mortas_puntos_vista.extend([unidades_iniciais] * (tiempo - t))
                                 break
                             for id_ud, ud in uds_copy.items():
-                                ud.ter_filho()
-                                ud.buscar_ud(uds_copy, media, 0, True, 0.2)
-                                ud.incrementar_idade()
-                                ud.death_probability(prob_morte)
+                                if ud.activa == True:
+                                    available = {id_ud: ud for id_ud, ud in uds_copy.items() if ud.activa}
+                                    ud.ter_filho()
+                                    ud.buscar_ud(available, media, 0, True, 0.2)
+                                    ud.incrementar_idade()
+                                    ud.death_probability(prob_morte)
                             # Collecting data
                             vivas_tasa_crecimiento.append(len([ud for id, ud in uds_copy.items() if ud.activa]))
                             if t % punto_vista == 0:

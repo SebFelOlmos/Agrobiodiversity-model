@@ -71,7 +71,7 @@ class UD_endogamy_al_inh:
         if random.random() < mortality_rate:
             self.activa = False
 
-    def buscar_ud(self, uds_systema, media, variedades, k=3): #metodo para buscar e reproducir.     
+    def buscar_ud(self, uds_systema, media, variedades, k=3, limit=150): #metodo para buscar e reproducir.     
         #Função para facilitar a busqueda de ids dentro da lista de parentes.
         def is_id_in_nested_lists(id_ud, nested_list):
             if id_ud in nested_list:
@@ -250,6 +250,8 @@ class UD_endogamy_al_inh:
                 
                 # Herdar sementes
                 novo_nodo.aleatory_inheritance(variedades, k)
+                if len(uds_systema) >= limit:
+                    self.replace(uds_systema)
                 
                 #return None
             else:
@@ -263,6 +265,13 @@ class UD_endogamy_al_inh:
     def aleatory_inheritance(self, variedades, k): #Metodo da herança de sementes.
         selected = random.sample(variedades, k=k) # k is the number of varieties that the new ud will inherit
         self.varieties.extend(selected)
+    def replace(self, alive):
+        ages = [obj.age for obj in alive.values()]
+        totage = sum(ages)
+        proba = [age/totage for age in ages]
+        ids = list(alive.keys())
+        choosen_id = random.choices(ids, weights=proba,k=1)[0]
+        self.uds[choosen_id].activa = False
         
 class UD_dual_organization_al_inh:
     ## CLase UD DUAL ORGANIZATION
@@ -311,7 +320,7 @@ class UD_dual_organization_al_inh:
         if random.random() < mortality_rate:
             self.activa = False
 
-    def buscar_ud(self, uds_systema, media, variedades, lineality, k=3, percentage_incest = 0.5): #metodo para buscar e reproducir.
+    def buscar_ud(self, uds_systema, media, variedades, lineality, k=3, percentage_incest = 0.5, limit=150): #metodo para buscar e reproducir.
         #Function to get a random couple according to the clan.
         def select_new_ud(selected_ud, uds_disponiveis, percentage_incest):
             if len(uds_disponiveis) == 0:
@@ -516,6 +525,8 @@ class UD_dual_organization_al_inh:
                 
                 # Herdar sementes
                 novo_nodo.aleatory_inheritance(variedades, k)
+                if len(uds_systema) >= limit:
+                    self.replace(uds_systema)
                 
                 #return None
             else:
@@ -529,6 +540,13 @@ class UD_dual_organization_al_inh:
     def aleatory_inheritance(self, variedades, k): #Metodo da herança de sementes.
         selected = random.sample(variedades, k=k) # k is the number of varieties that the new ud will inherit
         self.varieties.extend(selected)
+    def replace(self, alive):
+        ages = [obj.age for obj in alive.values()]
+        totage = sum(ages)
+        proba = [age/totage for age in ages]
+        ids = list(alive.keys())
+        choosen_id = random.choices(ids, weights=proba,k=1)[0]
+        self.uds[choosen_id].activa = False
         
 class UD_generalized_al_inh:
     ## CLase UD GENERALIZED
@@ -577,7 +595,7 @@ class UD_generalized_al_inh:
         if random.random() < mortality_rate:
             self.activa = False
 
-    def buscar_ud(self, uds_systema, media, variedades, lineality, k=3, percentage_incest = 0.5): #metodo para buscar e reproducir.
+    def buscar_ud(self, uds_systema, media, variedades, lineality, k=3, percentage_incest = 0.5, limit = 150): #metodo para buscar e reproducir.
         #Function to get a random couple
         def select_new_ud(selected_ud, uds_disponiveis, percentage_incest):
             if len(uds_disponiveis) == 0:
@@ -790,6 +808,8 @@ class UD_generalized_al_inh:
                 
                 # Herdar sementes
                 novo_nodo.aleatory_inheritance(variedades, k)
+                if len(uds_systema) >= limit:
+                    self.replace(uds_systema)
                 
                 #return None
             else:
@@ -803,3 +823,10 @@ class UD_generalized_al_inh:
     def aleatory_inheritance(self, variedades, k): #To inherit aleatory from a list of the existent varieties
         selected = random.sample(variedades, k=k)
         self.varieties.extend(selected)
+    def replace(self, alive):
+        ages = [obj.age for obj in alive.values()]
+        totage = sum(ages)
+        proba = [age/totage for age in ages]
+        ids = list(alive.keys())
+        choosen_id = random.choices(ids, weights=proba,k=1)[0]
+        self.uds[choosen_id].activa = False

@@ -24,12 +24,9 @@ Validation:
 2. Kinship systems
 
 
-Simply run the main.py file as follows:
+Simply go to the Main folder and run the main.py file as follows:
 
 py main.py
-
-## 🧪 Working with Jupyter Notebooks
-If you want to view the experiments and simulations in Jupyter notebooks, you can find them under the simulations directory. These notebooks contain visualizations and they maybe are easier to modify.
 
 ## 📂 Folder Structure
 Here's a quick overview of the repository's organization:
@@ -39,11 +36,7 @@ Here's a quick overview of the repository's organization:
 
 ├── Main  ------------> Main folder.
 
-├── Simulations ------> Jupyter notebooks for experiments and simulations
-
 ├── model_class ------> Classes of the model.
-
-├── not_used_erased --> Just some preliminar codes. Do not judge me by lookin at this floder :'(
 
 ├── to_get_data ------> Methods used to get data in some points of the model. Some were not used.
 
