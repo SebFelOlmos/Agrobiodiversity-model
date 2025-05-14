@@ -393,7 +393,7 @@ if choice == '1': #Kinship validation
 
 else: #Populational behavior
     # Method for heatmaps...!
-    def plot_heatmap(data, alphas, betas, alpha, beta, variable, colorbar_range=(0, 150), figsize=(7, 5)):
+    def plot_heatmap(data, alphas, betas, alpha, beta, variable, colorbar_range=(0, 150), figsize=(7, 6)):
         """
         Plot a heatmap with specific configuration for colorbar and labels.
 
@@ -412,7 +412,7 @@ else: #Populational behavior
         im = ax.imshow(alive_values, vmin=colorbar_range[0], vmax=colorbar_range[1])
         
         # Colorbar
-        cbar = fig.colorbar(im, ax=ax, label='UDs')
+        cbar = fig.colorbar(im, ax=ax, label='Households')
         #cbar.set_clim(*colorbar_range)
         
         # Set ticks and labels
@@ -588,10 +588,10 @@ else: #Populational behavior
             mM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             mM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive', (0, 150))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial Households', 'alive', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Endo_beta_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Endo_beta_fixed_mean.png')}")
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std', (0, 150))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial Households', 'std', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Endo_beta_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Endo_beta_fixed_std.png')}")
         elif variable_choice == '2': # Initial UDs
@@ -844,10 +844,10 @@ else: #Populational behavior
             hM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             hM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial UDs', 'Beta', 'alive')
+            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial Households', 'Beta', 'alive')
             plot.savefig(os.path.join(folder_name, 'Endo_Mean_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Endo_Mean_fixed_mean.png')}")
-            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial UDs', 'Beta', 'std')
+            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial Households', 'Beta', 'std')
             plot.savefig(os.path.join(folder_name, 'Endo_Mean_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Endo_Mean_fixed_std.png')}")
     elif kin_choice == '2': #Dual Organization
@@ -977,10 +977,10 @@ else: #Populational behavior
             mM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             mM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive', (0, 150))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Households', 'alive', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Dual_beta_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Dual_beta_fixed_mean.png')}")
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std', (0, 150))
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial Households', 'std', (0, 150))
             plot.savefig(os.path.join(folder_name, 'Dual_beta_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Dual_beta_fixed_std.png')}")
         elif variable_choice == '2': # Initial UDs
@@ -1227,10 +1227,10 @@ else: #Populational behavior
             hM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             hM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial UDs', 'Beta', 'alive')
+            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial Households', 'Beta', 'alive')
             plot.savefig(os.path.join(folder_name, 'Dual_Mean_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Dual_Mean_fixed_mean.png')}")
-            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial UDs', 'Beta', 'std')
+            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial Households', 'Beta', 'std')
             plot.savefig(os.path.join(folder_name, 'Dual_Mean_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Dual_Mean_fixed_std.png')}")
     else: #Generalized exchange
@@ -1365,10 +1365,10 @@ else: #Populational behavior
             mM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             mM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'alive')
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial Households', 'alive')
             plot.savefig(os.path.join(folder_name, 'Generalized_beta_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Generalized_beta_fixed_mean.png')}")
-            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial UDs', 'std')
+            plot = plot_heatmap(mM_datos, malphas, mbetas, 'Mean Children', 'Initial Households', 'std')
             plot.savefig(os.path.join(folder_name, 'Generalized_beta_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Generalized_beta_fixed_std.png')}")
         elif variable_choice == '2': # Initial UDs
@@ -1621,10 +1621,10 @@ else: #Populational behavior
             hM_datos = np.load(heat_std, allow_pickle=True)
             ## behavior for experiments
             hM_behavior = np.load(behavior, allow_pickle=True)
-            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial UDs', 'Beta', 'alive')
+            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial Households', 'Beta', 'alive')
             plot.savefig(os.path.join(folder_name, 'Generalized_Mean_fixed_mean.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean pop saved to: {os.path.join(folder_name, 'Generalized_Mean_fixed_mean.png')}")
-            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial UDs', 'Beta', 'std')
+            plot = plot_heatmap(hM_datos, halphas, hbetas, 'Initial Households', 'Beta', 'std')
             plot.savefig(os.path.join(folder_name, 'Generalized_Mean_fixed_std.png'), dpi=300, bbox_inches="tight")
             print(f"Heatmap of the mean std saved to: {os.path.join(folder_name, 'Generalized_Mean_fixed_std.png')}")
 
