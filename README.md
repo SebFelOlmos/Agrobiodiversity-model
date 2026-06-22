@@ -1,53 +1,126 @@
 # 🌱 Master's Degree Project: Kinship Rules and Agrobiodiversity of Manioc
-## 📖 Introduction
-Welcome to the repository for my Master's Degree Project! This project explores the effect of kinship rules and the inheritance of plants on the agrobiodiversity of manioc. It includes several components to simulate the reproduction of Unidades Domésticas (UD) or Households (HD) and the inheritance of manioc varieties, along with validations to ensure model accuracy.
 
-Before running the project, install the required dependencies listed in the requirements.txt file. You can do this by running the following command:
+## 📖 Overview
 
+This repository contains the computational framework developed for my Master's Degree project, which explores how kinship rules and plant inheritance mechanisms shape agrobiodiversity in manioc (cassava) systems.
+
+The project combines agent-based modelling, kinship systems, and cultural transmission to simulate how household organization influences the diversity and persistence of manioc varieties over time.
+
+> ⚠️ The **main implementation** of the model is now located in:
+> `local-kin-transmission-model/`
+
+The older structured version (`kin-transmission-model/`) is preserved for reference and documentation purposes.
+
+---
+
+## 🚀 Main Model (Current Version)
+
+The core simulation is implemented in:
+
+
+local-kin-transmission-model/
+
+
+This version includes:
+- Main simulation logic
+- Model configuration and execution scripts
+- Plotting and analysis tools
+- Output generation (figures and results)
+
+### ▶️ Running the model
+
+From the root directory:
+
+```bash
+python local-kin-transmission-model/main.py
+``` 
+📦 Legacy / Reference Model
+
+An earlier structured version of the model is available in:
+
+kin-transmission-model/
+
+This folder contains:
+
+Supplementary materials
+Quarto documents (.qmd)
+Supporting scripts for data processing and visualization
+Documentation and model evolution artifacts
+
+While still useful for understanding development history, it is not the primary implementation anymore.
+
+📦 Installation
+
+Install dependencies with:
 
 pip install -r requirements.txt
 
-📂 The literature folder contains valuable data and references about manioc diversity in traditional communities. This resource provides crucial context for understanding the project.
+📁 Repository Structure
+```bash
+├── local-kin-transmission-model/   # ⭐ Main simulation model (current version)
+│   ├── main.py
+│   ├── model.py
+│   ├── plots.py
+│   ├── output/
+│   │   └── images/
+│   └── supplementary_material2*.qmd/pdf
+│
+├── kin-transmission-model/         # Legacy/reference model
+│   ├── model_class/
+│   ├── to_get_data/
+│   ├── supplementary_material1*.qmd/pdf
+│
+├── Literature/                      # Bibliographic and theoretical background
+├── requirements.txt
+├── mi_biblioteca.bib
+├── LICENSE
+└── README.md
+```
 
-## 🚀 Running the Model or Validations
-To run the model or perform validation checks, execute the main.py file. Instructions for running the model and validations are included directly in the main.py file.
+📚 Literature
 
-🛠️ Main Components:
-Experiments:
+The Literature/ folder contains theoretical background and references on manioc diversity and traditional agroecological systems. It provides context for the modelling assumptions used in the simulation framework. We are publishin a systematic review on the topic. Data and code is available in https://github.com/SebFelOlmos/LRManioc2025. 
 
-1. Effect of kinship rules and inheritance of plants in agrobiodiversity
-2. Effect of different parameters on agrobiodiversity 
+🧪 Experiments & Validation
 
-Validation:
+The current model focuses on:
 
-1. Populational behavior
-2. Kinship systems
+### Experiments
+Effects of kinship rules on agrobiodiversity
+Effects of inheritance mechanisms and parameters
+Validation
+Population dynamics consistency
+Kinship system structure validation
+### 📌 Notes
 
+The local-kin-transmission-model/ directory contains the most recent and functional implementation.
+Older modules are preserved for transparency and reproducibility.
 
-Simply go to the Main folder and run the main.py file as follows:
+---
 
-py main.py
+## 🤝 Feedback, Contributions & Collaboration
 
-## 📂 Folder Structure
-Here's a quick overview of the repository's organization:
+Feedback, comments, and suggestions are very welcome. This project is part of an ongoing research effort, and improvements in model structure, clarity, or scientific formulation are highly appreciated.
 
+If you identify issues, have ideas for extensions, or want to discuss potential improvements, feel free to open an issue in the repository or email me :D.
 
-├── Literature -------> Literature folder. There we have a revision on diversity of manioc. As you may see, there is no data available! We may publish the systematic revision version of that topic soon.
+### 🛠️ Pull Requests
 
-├── Main/ ----------------------------> Core simulation scripts and outputs.
+Pull requests are welcome. If you would like to contribute:
 
-│------├── Outputs/ ---------------------> Directory storing the results produced by the experiments (e.g., figures, data exports).
+- Fork the repository
+- Create a feature branch for your changes
+- Ensure your code is clear and reproducible
+- Submit a pull request with a clear description of the modification
 
-│------├── Experiment_1.py --------------> Script defining the configuration and execution of the first experimental setup.
+All contributions will be reviewed in the context of improving model transparency, reproducibility, and scientific robustness.
 
-│------├── Experiment_2.py --------------> Script for the second experimental configuration, exploring different parameters or scenarios.
+---
 
-│------├── Main.py ----------------------> Central entry point for running the model and coordinating different components.
+## 📊 Data Availability
 
-│------└── Validation kinship systems.py -> Script focused on the validation of the model.
+All data generated by the model (including simulation outputs, figures, and derived datasets) will be made publicly available through **Zenodo**.
 
-├── model_class ------> Classes of the model.
+Once published, the corresponding DOI will be added here to ensure long-term accessibility and citation stability of the project outputs.
 
-├── to_get_data ------> Methods used to get data in some points of the model. Some were not used.
-
-└── README.md --------> Project documentation (this file)
+---
