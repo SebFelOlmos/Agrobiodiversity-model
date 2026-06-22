@@ -34,7 +34,7 @@ keywords:
 
 # Introduction
 
-This supplementary material presents additional results for the main model presented in the paper "Agrobiodiversity dynamics in traditional socioecological systems: an agent based model approach on the role of kinship systems and variety transmission". The main results and discussions are presented in the paper. Therefore, here we present the model`s implementation and additional results.
+This supplementary material presents additional results for the main model presented in the paper "Agrobiodiversity dynamics in traditional socioecological systems: an agent based model approach on the role of kinship systems and variety transmission". The main results and discussions are presented in the paper. Therefore, here we present the model\`s implementation and additional results. The code is available [in the GitHub repository](https://github.com/SebFelOlmos/Agrobiodiversity-model). 
 
 # Model
 
@@ -196,13 +196,12 @@ def exp_com_init_distrib():
 
 ```
 
-
-
 {{< pagebreak >}}
 
 # Results
 
-Here we present results for both initialization configurations. To run the results you have to run the simulations first. They do not take that time. Go to main and follow the instructions.
+Here we present results for both initialization configurations. The data used to render the results available in this report (if you are seeing it from Quarto) should be downloaded from this [link](https://zenodo.org/records/20800922) or created running the code. 
+
 
 ```{python}
 import pandas as pd
@@ -252,12 +251,11 @@ plot_n1_community_richness(df_clan, configs=['Dual-Parallel', 'Dual-Cross-100',]
 
 plot_clan_measures(df_com, communities=(1, 2, 3))
 plot_clan_measures(df_clan, communities=(1, 2, 3))
-    
-
-
 ```
 
+
 ```{python}
+#| fig-pos: "H"
 #| label: fig-com-richness
 #| fig-cap: "Community richness measures for all configurations"
 #| fig-subcap: 
@@ -270,6 +268,7 @@ plot_community_measures(df_com, communities=[2, 3])
 plot_community_measures(df_clan, communities=[2, 3], configs=['Dual-Parallel', 'Dual-Cross-100'])
 
 ```
+
 
 ```{python}
 #| fig-pos: "H"
@@ -294,8 +293,6 @@ plot_com_vs_clan_dual(df_com, dual_config='Dual-Cross-66')
 plot_com_vs_clan_dual(df_clan,dual_config='Dual-Cross-66')
 plot_com_vs_clan_dual(df_com, dual_config='Dual-Cross-100')
 plot_com_vs_clan_dual(df_clan,dual_config='Dual-Cross-100')
-
-
 ```
 
 ```{python}
