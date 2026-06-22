@@ -391,7 +391,8 @@ if choice == '1': #Kinship validation
 
     plt.show()
 
-else: #Populational behavior
+else: 
+    #Populational behavior
     # Method for heatmaps...!
     def plot_heatmap(data, alphas, betas, alpha, beta, variable, colorbar_range=(0, 150), figsize=(7, 6)):
         """

@@ -101,8 +101,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_endogamy.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -191,8 +192,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_endogamy_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -386,8 +388,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (int(varieties))]
                                 for ud in UD_endogamy.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -476,8 +479,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (int(varieties))]
                                 for ud in UD_endogamy_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -672,8 +676,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_endogamy.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -764,8 +769,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_endogamy_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -1263,8 +1269,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_dual_organization.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -1352,8 +1359,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_dual_organization_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -1550,8 +1558,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (int(varieties))]
                                 for ud in UD_dual_organization.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -1639,8 +1648,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (int(varieties))]
                                 for ud in UD_dual_organization_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -1836,8 +1846,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_dual_organization.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -1926,8 +1937,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_dual_organization_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -2417,8 +2429,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_generalized.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -2506,8 +2519,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_generalized_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(iniciais)]
                             vivas_tasa_crecimiento = [int(iniciais)]
@@ -2704,8 +2718,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (int(varieties))]
                                 for ud in UD_generalized.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -2793,8 +2808,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (int(varieties))]
                                 for ud in UD_generalized_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -2991,8 +3007,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_generalized.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
@@ -3080,8 +3097,9 @@ def run_simulation(choice, variable): #Simulations!
                             else:
                                 initial_varieties = [Variety() for _ in range (10)]
                                 for ud in UD_generalized_al_inh.uds.values():
-                                    for _ in range(3):
-                                        ud.varieties.append(random.choice(initial_varieties))   
+                                    random_samples = random.sample(initial_varieties, 3)
+                                    for sample in random_samples:
+                                        ud.varieties.append(sample)  
                             # Lists for graphs
                             vivas_puntos_vista = [int(m)]
                             vivas_tasa_crecimiento = [int(m)]
