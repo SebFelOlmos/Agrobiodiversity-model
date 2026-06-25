@@ -1,6 +1,6 @@
 ---
-title: 'Supplementary Material 1'
-subtitle: 'Demographic model'
+title: 'Supporting Information 1'
+subtitle: 'Alternative model'
 author:
     - name: 'Juan Sebastián Felipe Olmos Núñez' 
     - name: 'Cristina Adams' 
